@@ -1,10 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { Geolocation } from '@capacitor/geolocation'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [gps, setGps] = useState('')
+
+  const printCurrentPosition = async () => {
+    const coordinates = await Geolocation.getCurrentPosition()
+
+    setGps(coordinates.coords.latitude + ' ' + coordinates.coords.longitude)
+  }
+
+  function getWeatherData() {
+    fetch(
+      'https://api.openweathermap.org/data/2.5/weather?q=London&appid=9c4b0b0b0b0b0b0b0b0b0b0b0b0b0b0b'
+    )
+      .then((response) => response.json())
+      .then((data) => console.log(data.message))
+  }
+
+  useEffect(() => {
+    printCurrentPosition()
+    getWeatherData()
+  }, [])
 
   return (
     <>
@@ -16,7 +37,8 @@ function App() {
           <img src={reactLogo} className='logo react' alt='React logo' />
         </a>
       </div>
-      <h1>Hello World</h1>
+      <h1>Hello Laura</h1>
+      <h2>{gps}</h2>
       <div className='card'>
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
